@@ -16,8 +16,19 @@ jobs:
         with:
           java-version: 11
 
-      - name: Build with Gradle
-        run: ./gradlew build
+      - name: Check Commit Messages
+        run: |
+          COMMIT_MESSAGE=$(git log --format=%B -n 1 ${{ github.event.pull_request.head.sha }})
+          if ! echo "$COMMIT_MESSAGE" | grep -Eq "^(feat|fix|chore|docs|style|refactor|perf|test): "; then
+            echo "❌ Commit message does not follow convention! (e.g., feat: new button)"
+            exit 1
+          fi
+
+      - name: Run Lint Checks
+        run: ./gradlew lint
+
+      - name: Run Unit Tests
+        run: ./gradlew test
 
   build-and-release:
     if: startsWith(github.event.pull_request.title, 'releases')
@@ -40,7 +51,7 @@ jobs:
           name: app-release.apk
           path: app/build/outputs/apk/release/app-release.apk
 
-      - name: Create Release
+      - name: Create Draft Release
         id: create_release
         uses: actions/create-release@v1
         env:
@@ -48,7 +59,7 @@ jobs:
         with:
           tag_name: ${{ github.sha }}
           release_name: Release ${{ github.sha }}
-          draft: false
+          draft: true
           prerelease: false
 
       - name: Upload Release Asset
