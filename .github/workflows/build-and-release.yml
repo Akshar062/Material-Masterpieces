@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    types: [opened, synchronize, reopened]
 
 jobs:
   verify:
@@ -23,7 +21,7 @@ jobs:
       - name: Check Commit Message Format
         run: |
           COMMIT_MESSAGE=$(git log --format=%B -n 1 ${{ github.sha }})
-          if ! echo "$COMMIT_MESSAGE" | grep -Eq "^(feat|fix|chore|docs|style|refactor|perf|test): "; then
+          if ! echo "$COMMIT_MESSAGE" | grep -Eq "^(feat|fix|chore|docs|style|refactor|perf|test|release): "; then
             echo "❌ Commit message does not follow convention! (e.g., feat: new button)"
             exit 1
           fi
