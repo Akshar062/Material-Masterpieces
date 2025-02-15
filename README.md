@@ -36,3 +36,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Credits
 Special thanks to [sinasamaki](https://github.com/sinasamaki) for creating the guide to create wonderful UI. Check out his [YouTube channel](https://www.youtube.com/@sinasamaki) and [website](https://www.sinasamaki.com/) for more amazing content. If you find his work helpful, consider buying a subscription on his [premium website](https://www.sinasamaki.com/premium/).
+
+## Continuous Integration
+This project uses GitHub Actions for continuous integration. The workflow file `build-and-release.yml` is located in the `.github/workflows/` directory. It verifies the Android Jetpack Compose app, builds the APK if the pull request title starts with "releases", and releases the APK if the pull request title starts with "releases".
