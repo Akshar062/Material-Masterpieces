@@ -17,7 +17,7 @@ Material Masterpieces is an Android application designed to showcase beautifully
 ## Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/Akshar062/MaterialMasterpieces.git
+   [git clone https://github.com/Akshar062/MaterialMasterpieces.git](https://github.com/Akshar062/Material-Masterpieces.git)
    ```
 2. Open the project in Android Studio.
 3. Build and run the app on an emulator or device.
