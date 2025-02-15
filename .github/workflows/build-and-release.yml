@@ -30,7 +30,7 @@ jobs:
       - name: Run Unit Tests
         run: ./gradlew test
 
-  build-and-release:
+  build-and-draft-release:
     if: startsWith(github.event.pull_request.title, 'releases')
     runs-on: ubuntu-latest
     steps:
@@ -71,3 +71,37 @@ jobs:
           asset_path: app/build/outputs/apk/release/app-release.apk
           asset_name: app-release.apk
           asset_content_type: application/vnd.android.package-archive
+
+  manual-approval:
+    needs: build-and-draft-release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for Manual Approval
+        uses: hmarr/auto-approve-action@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          approval-message: "🚀 Ready for release! Approve to publish."
+
+  publish-release:
+    needs: manual-approval
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish Release
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { owner, repo } = context.repo;
+            const releases = await github.rest.repos.listReleases({ owner, repo });
+            const draftRelease = releases.data.find(r => r.draft);
+            if (draftRelease) {
+              await github.rest.repos.updateRelease({
+                owner,
+                repo,
+                release_id: draftRelease.id,
+                draft: false
+              });
+              console.log(`✅ Published release: ${draftRelease.name}`);
+            } else {
+              console.log("⚠️ No draft release found.");
+            }
