@@ -25,6 +25,9 @@ jobs:
             echo "❌ Commit message does not follow convention! (e.g., feat: new button)"
             exit 1
           fi
+      
+      - name: Grant Execute Permission for Gradlew
+        run: chmod +x gradlew
 
       - name: Run Lint Checks
         run: ./gradlew lint
