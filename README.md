@@ -33,3 +33,6 @@ Contributions are welcome! If you have UI components you'd like to share, feel f
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Credits
+Special thanks to [sinasamaki](https://github.com/sinasamaki) for creating the guide to create wonderful UI. Check out his [YouTube channel](https://www.youtube.com/@sinasamaki) and [website](https://www.sinasamaki.com/) for more amazing content. If you find his work helpful, consider buying a subscription on his [premium website](https://www.sinasamaki.com/premium/).
