@@ -39,3 +39,55 @@ Special thanks to [sinasamaki](https://github.com/sinasamaki) for creating the g
 
 ## Continuous Integration
 This project uses GitHub Actions for continuous integration. The workflow file `build-and-release.yml` is located in the `.github/workflows/` directory. It verifies the Android Jetpack Compose app, builds the APK if the pull request title starts with "releases", and releases the APK if the pull request title starts with "releases".
+
+## Continuous Integration Workflow
+
+### Workflow Steps
+1. **Verify Job**:
+   - Checkout code
+   - Set up JDK 17
+   - Check commit message format
+   - Grant execute permission for Gradlew
+   - Run lint checks
+   - Run unit tests
+
+2. **Build and Draft Release Job**:
+   - Needs: verify
+   - If: contains(github.event.head_commit.message, 'release:')
+   - Checkout code
+   - Set up JDK 11
+   - Build APK
+   - Upload APK
+   - Create draft release
+   - Upload release asset
+
+3. **Manual Approval Job**:
+   - Needs: build-and-draft-release
+   - Wait for manual approval
+
+4. **Publish Release Job**:
+   - Needs: manual-approval
+   - Publish draft release
+
+### Commit Message Conventions
+- Use the following prefixes for commit messages:
+  - `feat`: A new feature
+  - `fix`: A bug fix
+  - `chore`: Changes to the build process or auxiliary tools and libraries
+  - `docs`: Documentation only changes
+  - `style`: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
+  - `refactor`: A code change that neither fixes a bug nor adds a feature
+  - `perf`: A code change that improves performance
+  - `test`: Adding missing tests or correcting existing tests
+  - `release`: Changes related to releasing the APK
+
+### Manual Approval Step
+- The workflow includes a manual approval step before publishing the release. This step ensures that a human reviews and approves the release before it goes live.
+
+### Step-by-Step Guide
+1. **Commit Changes**: Ensure your commit messages follow the conventions mentioned above.
+2. **Push to Main Branch**: Push your changes to the `main` branch.
+3. **Verify Job**: The workflow will automatically start the `verify` job.
+4. **Build and Draft Release Job**: If your commit message contains `release:`, the `build-and-draft-release` job will run.
+5. **Manual Approval**: Wait for manual approval to proceed with the release.
+6. **Publish Release**: Once approved, the `publish-release` job will publish the draft release.
