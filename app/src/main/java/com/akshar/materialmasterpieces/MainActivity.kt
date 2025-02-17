@@ -10,6 +10,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.akshar.materialmasterpieces.ui.theme.MaterialMasterpiecesTheme
@@ -30,16 +33,18 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainScreen() {
 
+    val selectedTab = remember { mutableIntStateOf(0) }
+
     Scaffold(
         bottomBar = {
             GlassmorphicBottomNavigation{
-                Log.d("MainActivity", "Selected tab: $it")
+                selectedTab.intValue = it
             }
         },
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
         Text(
-            text = "Hello, World!",
+            text = "Selected Tab: ${selectedTab.intValue}",
             modifier = Modifier.padding(innerPadding)
         )
     }
