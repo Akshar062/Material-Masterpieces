@@ -61,11 +61,10 @@ import dev.chrisbanes.haze.hazeChild
 
 @Composable
 fun GlassmorphicBottomNavigation(
-    selectedTabIndex: Int,
-    onTabSelected: (Int) -> Unit
+    onTabChange: (Int) -> Unit // Add this parameter
 ) {
     val hazeState = remember { HazeState() }
-//    var selectedTabIndex by remember { mutableIntStateOf(1) }
+    var selectedTabIndex by remember { mutableIntStateOf(1) }
     val colorScheme = MaterialTheme.colorScheme
 
     Box(
@@ -89,7 +88,8 @@ fun GlassmorphicBottomNavigation(
             tabs,
             selectedTab = selectedTabIndex,
             onTabSelected = {
-                onTabSelected(tabs.indexOf(it))
+                selectedTabIndex = tabs.indexOf(it)
+                onTabChange(selectedTabIndex) // Notify listener when tab changes
             }
         )
 
@@ -160,6 +160,7 @@ fun GlassmorphicBottomNavigation(
     }
 }
 
+
 @Composable
 fun BottomBarTabs(
     tabs: List<BottomBarTab>,
@@ -204,7 +205,20 @@ fun BottomBarTabs(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
                 ) {
-                    Icon(imageVector = tab.icon, contentDescription = "tab ${tab.title}")
+                    val iconScale by animateFloatAsState(
+                        targetValue = if (selectedTab == tabs.indexOf(tab)) 1.2f else 1f,
+                        label = "iconScale",
+                        animationSpec = spring(
+                            stiffness = Spring.StiffnessLow,
+                            dampingRatio = Spring.DampingRatioMediumBouncy,
+                        )
+                    )
+
+                    Icon(
+                        imageVector = tab.icon,
+                        contentDescription = "tab ${tab.title}",
+                        modifier = Modifier.scale(iconScale)
+                    )
                     Text(text = tab.title)
                 }
             }
