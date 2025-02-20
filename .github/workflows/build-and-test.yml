@@ -1,0 +1,39 @@
+name: Build and Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: 17
+
+      - name: Check Commit Message Format
+        run: |
+          COMMIT_MESSAGE=$(git log --format=%B -n 1 ${{ github.sha }})
+          if ! echo "$COMMIT_MESSAGE" | grep -Eq "^(feat|fix|chore|docs|style|refactor|perf|test|release): "; then
+            echo "❌ Commit message does not follow convention! (e.g., feat: new button)"
+            exit 1
+          fi
+
+      - name: Grant Execute Permission for Gradlew
+        run: chmod +x gradlew
+
+      - name: Run Lint Checks
+        run: ./gradlew lint
+
+      - name: Run Unit Tests
+        run: ./gradlew test
